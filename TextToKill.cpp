@@ -32,6 +32,50 @@ namespace colorCode {
     const string RESET = "\033[0m";
 }
 
+#ifdef _WIN32
+    #include <windows.h>
+#else
+    #include <sys/ioctl.h>  
+    #include <unistd.h>
+#endif
+
+void getTerminalSize(int& rows, int& cols) {
+#ifdef _WIN32
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    cols = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+#else
+    struct winsize w;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+    rows = w.ws_row;
+    cols = w.ws_col;
+#endif
+}
+
+void setCursorPosition(int row, int col) {
+#ifdef _WIN32
+    COORD pos = {static_cast<SHORT>(col), static_cast<SHORT>(row) };
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+#else
+    cout << "\033[" << (row + 1) << ";" << (col + 1) << "H" << std::flush;
+#endif
+}
+
+void printTopRight(const string& text, int& temperature) {
+    int rows, cols;
+    getTerminalSize(rows, cols);
+
+    string tempStr = to_string(temperature);
+    int totalLen = text.length() + tempStr.length();
+    int targetCol = cols - totalLen;
+    if (targetCol < 0) targetCol = 0;
+
+    // Move cursor to a different position so it doesn't interfere
+    setCursorPosition(0, targetCol);
+    cout << colorCode::GRAY << text << temperature << std::flush;
+}
+
 string toLower(string str) {
     transform(str.begin(), str.end(), str.begin(), ::tolower);
     return str;
@@ -110,6 +154,9 @@ public:
     void checkInv() {
 
     }
+    void inventory() {
+
+    }
 
     void move(string dir) {
         dir = toLower(dir);
@@ -132,7 +179,7 @@ public:
     }
 
     void examineObj(string obj) {
-
+         
     }
 
     void checkDir() {
@@ -154,9 +201,12 @@ void clearScreen() {
 
 string getInput(string text, string color = colorCode::CYAN) {
     string input;
-    cout << endl;
-    cout << color << text << colorCode::RESET << endl;
-    cout << endl;
+    
+    if (!text.empty()) {
+        cout << endl;
+        cout << color << text << colorCode::RESET << endl;
+        cout << endl;
+    }
     cin >> input;
     input = toLower(input);
     return input;
@@ -180,9 +230,13 @@ void invalidOption(string& input, string message) {
 
 int main(){
 
+    int temp = 100;
+
     string Input = getInput("type 'start' to begin.", colorCode::GRAY);
     checkValidity(Input, "start", "type 'start' to begin.", colorCode::GRAY);
     clearScreen();
+    printTopRight("Temp: ", temp);
+    setCursorPosition(0, 3);
     cout << colorCode::GRAY << "you are in a thick pine forest. \nit appears to be morning. \nthere's light snow." << colorCode::RESET << endl;
     
     Game game;

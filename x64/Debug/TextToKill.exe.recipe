@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\Users\beats\source\repos\TextToKill\x64\Debug\TextToKill.exe</FullPath>
+      <FullPath>C:\TextToKill\x64\Debug\TextToKill.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />
