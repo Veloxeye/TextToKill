@@ -1,6 +1,6 @@
 #include <iostream>
-#include <cstdlib>  
-#include <ctime>    
+#include <cstdlib>
+#include <ctime> 
 #include <string>
 #include <iomanip>
 #include <thread>
@@ -30,6 +30,15 @@ namespace colorCode {
     const string GREEN = "\033[1;32m";
     const string ORANGE = "\033[38;5;208m";
     const string RESET = "\033[0m";
+}
+
+int temp() {
+    
+    // uh like make this yknow shabong da shaboing later ifyaknowaddamean
+    int temp = 100;
+
+    return temp;
+
 }
 
 #ifdef _WIN32
@@ -73,12 +82,20 @@ void printTopRight(const string& text, int& temperature) {
 
     // Move cursor to a different position so it doesn't interfere
     setCursorPosition(0, targetCol);
-    cout << colorCode::GRAY << text << temperature << std::flush;
+    cout << colorCode::CYAN << text << temperature << std::flush;
 }
 
 string toLower(string str) {
     transform(str.begin(), str.end(), str.begin(), ::tolower);
     return str;
+}
+
+void fakeClear() {
+    int temp = 100;
+
+    cout << "\033[2J";
+    printTopRight("Temp: ", temp);
+    setCursorPosition(0, 0);
 }
 
 class Game {
@@ -94,39 +111,35 @@ public:
 
 
     void cmdList() {
-        cout << endl;
+        fakeClear();
         cout << colorCode::YELLOW << "list of commands: " << colorCode::RESET << endl;
-        cout << colorCode::GRAY << "help. \nlook. \nexamine. \ninventory. \nmove. \ndirection. \nattack. \nquit." << colorCode::RESET << endl;
+        cout << colorCode::GRAY << "help. (?) \nlook. (l) \nexamine. (ex) \ninventory. (inv) \nmove: \n north (n)\n south (s)\n east (e)\n west (w)\ndirection. (dir) \nattack. (a) \nquit." << colorCode::RESET << endl;
+        cout << endl;
     }
 
     void cmdUse(string cmd) {
         cmd = toLower(cmd);
 
-        if (cmd == "look") {
+        if (cmd == "look" || cmd == "l") {
             lookAround();
         }
-        else if (cmd == "move") {
-            string dir;
-            cout << endl;
-            cout << colorCode::GRAY << "north, south, east, or west?" << colorCode::RESET << endl;
-            cin >> dir;
-
-            move(dir);
+        else if (cmd == "north" || cmd == "n" || cmd == "south" || cmd == "s" || cmd == "east" || cmd == "e" || cmd == "west" || cmd == "w") {
+            move(cmd);
         }
-        else if (cmd == "inventory") {
+        else if (cmd == "inventory" || cmd == "inv") {
             checkInv();
         }
-        else if (cmd == "examine") {
+        else if (cmd == "examine" || cmd == "ex") {
             string obj;
             cout << endl;
             cout << colorCode::GRAY << "what do you want to examine?" << colorCode::RESET << endl;
             cin >> obj;
             examineObj(obj);
         }
-        else if (cmd == "direction") {
-            checkDir();
+        else if (cmd == "direction" || cmd == "dir") {
+            
         }
-        else if (cmd == "attack") {
+        else if (cmd == "attack" || cmd == "a") {
             string enemy;
             cout << endl;
             cout << colorCode::GRAY << "who do you want to attack?" << colorCode::RESET << endl;
@@ -134,7 +147,7 @@ public:
 
             attackEnemy(enemy);
         }
-        else if (cmd == "help") {
+        else if (cmd == "help" || cmd == "?") {
             cmdList();
         }
         else if (cmd == "quit") {
@@ -161,17 +174,17 @@ public:
     void move(string dir) {
         dir = toLower(dir);
         
-        if (dir == "north") {
-
+        if (dir == "north" || dir == "n") {
+            bool moveNorth = true;
         }
-        else if (dir == "south") {
-
+        else if (dir == "south" || dir == "s") {
+            bool moveSouth = false;
         }
-        else if (dir == "east") {
-
+        else if (dir == "east" || dir == "e") {
+            bool moveEast = false;
         }
-        else if (dir == "west") {
-
+        else if (dir == "west" || dir == "w") {
+            bool moveWest = false;
         }
         else {
             cout << colorCode::RED << "invalid direction" << colorCode::RESET << endl;
@@ -179,16 +192,65 @@ public:
     }
 
     void examineObj(string obj) {
-         
+       
+        toLower(obj);
+
+
+
     }
 
-    void checkDir() {
+    void checkDir(bool move) {
+
+        bool moveNorth = true;
+        bool moveSouth = false;
+        bool moveEast = false;
+        bool moveWest = false;
+
+        if (moveNorth = true) {
+            bool facingNorth = true;
+        }
+        else if (moveSouth = true) {
+            bool facingSouth = true;
+        }
+        else if (moveEast = true) {
+            bool facingEast = true;
+        }
+        else if (moveWest = true) {
+            bool facingWest = true;
+        }
 
     }
 
     void attackEnemy(string enemy) {
 
     }
+};
+
+class Object {
+private:
+    
+
+public:
+    
+
+};
+
+class Area {
+private:
+
+
+public:
+
+
+};
+
+class Actor {
+private:
+
+
+public:
+
+
 };
 
 void clearScreen() {
@@ -203,7 +265,6 @@ string getInput(string text, string color = colorCode::CYAN) {
     string input;
     
     if (!text.empty()) {
-        cout << endl;
         cout << color << text << colorCode::RESET << endl;
         cout << endl;
     }
@@ -217,6 +278,7 @@ void checkValidity(string& input, string definition, string get, string color = 
     input = toLower(input);
 
     while (input != definition) {
+        fakeClear();
         cout << endl;
         cout << color << "not currently an option..." << colorCode::RESET << endl;
         input = getInput(get, color);
@@ -236,9 +298,10 @@ int main(){
     checkValidity(Input, "start", "type 'start' to begin.", colorCode::GRAY);
     clearScreen();
     printTopRight("Temp: ", temp);
-    setCursorPosition(0, 3);
+    setCursorPosition(0, 0);
     cout << colorCode::GRAY << "you are in a thick pine forest. \nit appears to be morning. \nthere's light snow." << colorCode::RESET << endl;
-    
+    cout << endl;
+
     Game game;
 
     while (game.isRunning()) {
