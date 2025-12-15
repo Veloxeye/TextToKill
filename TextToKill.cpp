@@ -143,6 +143,7 @@ public:
             string enemy;
             cout << endl;
             cout << colorCode::GRAY << "who do you want to attack?" << colorCode::RESET << endl;
+            cout << endl;
             cin >> enemy;
 
             attackEnemy(enemy);
@@ -222,6 +223,15 @@ public:
     }
 
     void attackEnemy(string enemy) {
+
+        if (enemy == "god") {
+            cout << endl;
+            cout << colorCode::RED << "smited :<" << colorCode::RESET << endl;
+        }
+        else {
+            cout << endl;
+            cout << "dne" << endl;
+        }
 
     }
 };
@@ -309,5 +319,7 @@ int main(){
         game.cmdUse(cmd);
     }
 
+
     return 0;
+
 }
