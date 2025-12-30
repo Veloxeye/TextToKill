@@ -45,62 +45,50 @@ int temp() {
 
 }
 
-#ifdef _WIN32
-    #include <windows.h>
-#else
-    #include <sys/ioctl.h>  
-    #include <unistd.h>
-#endif
-
-void getTerminalSize(int& rows, int& cols) {
-#ifdef _WIN32
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
-    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
-    cols = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-    rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
-#else
-    struct winsize w;
-    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-    rows = w.ws_row;
-    cols = w.ws_col;
-#endif
+void getScreenSize(int& w, int& h) {
+    SDL_DisplayID displayID = SDL_GetPrimaryDisplay();
+    const SDL_DisplayMode* mode = SDL_GetCurrentDisplayMode(displayID);
+    if (mode != nullptr) {
+        w = mode->w;
+        h = mode->h;
+    }
 }
 
-void setCursorPosition(int row, int col) {
-#ifdef _WIN32
-    COORD pos = {static_cast<SHORT>(col), static_cast<SHORT>(row) };
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-#else
-    cout << "\033[" << (row + 1) << ";" << (col + 1) << "H" << std::flush;
-#endif
-}
+//void setCursorPosition(int row, int col) {
+//#ifdef _WIN32
+  //  COORD pos = {static_cast<SHORT>(col), static_cast<SHORT>(row) };
+  //  SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+//#else
+ //   cout << "\033[" << (row + 1) << ";" << (col + 1) << "H" << std::flush;
+//#endif
+//}
 
-void printTopRight(const string& text, int& temperature) {
-    int rows, cols;
-    getTerminalSize(rows, cols);
+//void printTopRight(const string& text, int& temperature) {
+   // int rows, cols;
+  //  getTerminalSize(rows, cols);
 
-    string tempStr = to_string(temperature);
-    int totalLen = text.length() + tempStr.length();
-    int targetCol = cols - totalLen;
-    if (targetCol < 0) targetCol = 0;
+  //  string tempStr = to_string(temperature);
+  //  int totalLen = text.length() + tempStr.length();
+  //  int targetCol = cols - totalLen;
+  //  if (targetCol < 0) targetCol = 0;
 
     // Move cursor to a different position so it doesn't interfere
-    setCursorPosition(0, targetCol);
-    cout << colorCode::CYAN << text << temperature << std::flush;
-}
+  //  setCursorPosition(0, targetCol);
+  //  cout << colorCode::CYAN << text << temperature << std::flush;
+//}
 
 string toLower(string str) {
-    transform(str.begin(), str.end(), str.begin(), ::tolower);
+   transform(str.begin(), str.end(), str.begin(), ::tolower);
     return str;
 }
 
-void fakeClear() {
-    int temp = 100;
+//void fakeClear() {
+ //   int temp = 100;
 
-    cout << "\033[2J";
-    printTopRight("Temp: ", temp);
-    setCursorPosition(0, 0);
-}
+   // cout << "\033[2J";
+ //   printTopRight("Temp: ", temp);
+ //   setCursorPosition(0, 0);
+//}
 
 class Game {
 private:
@@ -115,7 +103,6 @@ public:
 
 
     void cmdList() {
-        fakeClear();
         cout << colorCode::YELLOW << "list of commands: " << colorCode::RESET << endl;
         cout << colorCode::GRAY << "help. (?) \nlook. (l) \nexamine. (ex) \ninventory. (inv) \nmove: \n north (n)\n south (s)\n east (e)\n west (w)\ndirection. (dir) \nattack. (a) \nquit." << colorCode::RESET << endl;
         cout << endl;
@@ -292,7 +279,7 @@ void checkValidity(string& input, string definition, string get, string color = 
     input = toLower(input);
 
     while (input != definition) {
-        fakeClear();
+        //fakeClear();
         cout << endl;
         cout << color << "not currently an option..." << colorCode::RESET << endl;
         input = getInput(get, color);
@@ -361,24 +348,24 @@ void textWindow(int windowWidth, int windowHeight, float horizontalPadding, floa
 
     TTF_Font* font = TTF_OpenFont("Resources/Fonts/luximr.ttf", fontSize); //open the font at path "Resources/Fonts/luximr.ttf", with font size passed to function
 
-    int leftPadding = horizontalPadding / 2;
-    int topPadding = verticalPadding / 2;
+    float leftPadding = horizontalPadding / 2.0f;
+    float topPadding = verticalPadding / 2.0f;
 
-    int availableWidth = renderWidth - horizontalPadding;
-    int availableHeight = renderHeight - verticalPadding;
+    float availableWidth = renderWidth - horizontalPadding;
+    float availableHeight = renderHeight - verticalPadding;
 
-    int cellWidth = availableWidth / charGridWidth;
-    int cellHeight = availableHeight / charGridHeight;
+    float cellWidth = availableWidth / charGridWidth;
+    float cellHeight = availableHeight / charGridHeight;
 
     if (forceSquareCells) {
-        int cellSize = min(cellWidth, cellHeight);
+        float cellSize = min(cellWidth, cellHeight);
         cellWidth = cellHeight = cellSize;
 
-        int usedWidth = cellSize * charGridWidth;
-        int usedHeight = cellSize * charGridHeight;
+        float usedWidth = cellSize * charGridWidth;
+        float usedHeight = cellSize * charGridHeight;
 
-        leftPadding = (renderWidth - usedWidth) / 2;
-        topPadding = (renderHeight - usedHeight) / 2;
+        leftPadding = (renderWidth - usedWidth) / 2.0f;
+        topPadding = (renderHeight - usedHeight) / 2.0f;
     }
 
     //for each grid cell
@@ -386,7 +373,7 @@ void textWindow(int windowWidth, int windowHeight, float horizontalPadding, floa
         for (int y = 0; y < charGridHeight; y++) {
             //Generate a grid square rect for the bounds of the char being rendered
             //add padding, then 
-            SDL_FRect rect = { leftPadding + x * cellWidth, topPadding + y * cellHeight, cellWidth, cellHeight};
+            SDL_FRect rect = { leftPadding + x * cellWidth, topPadding + y * cellHeight, cellWidth, cellHeight };
 
             //render the bounds rect in red
             SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
@@ -432,7 +419,9 @@ int main() {
 
     TTF_Init(); //initialize text rendering
 
-    textWindow(900, 900, 0, 0, "test", 50, 50, 15, false);
+    int width, height;
+    getScreenSize(width,height);
+    textWindow(width, height, 0, 0, "test", 50, 50, 15, false);
     //bouncyWindowColonThree(100, 100, ":3", 6, 6, 10000);
     //bouncyWindowColonThree(50, 50, ">:3", -10, -10, 10000);
 
@@ -444,8 +433,8 @@ int main() {
     string Input = getInput("type 'start' to begin.", colorCode::GRAY);
     checkValidity(Input, "start", "type 'start' to begin.", colorCode::GRAY);
     clearScreen();
-    printTopRight("Temp: ", temp);
-    setCursorPosition(0, 0);
+    //printTopRight("Temp: ", temp);
+   // setCursorPosition(0, 0);
     cout << colorCode::GRAY << "you are in a thick pine forest. \nit appears to be morning. \nthere's light snow." << colorCode::RESET << endl;
     cout << endl;
 
