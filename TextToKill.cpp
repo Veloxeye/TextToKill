@@ -303,17 +303,10 @@ void invalidOption(string& input, string message) {
     
 }
 
-int main() {
-    if (!SDL_Init(SDL_INIT_VIDEO)) {
-        cout << "ERROR";
-        return -1;
-    }
-
+void bouncyWindowColonThree(int windowSizeX, int windowSizeY, const char * windowLabel, int speedX, int speedY, int durationMS) {
     SDL_Window* window;
     SDL_Renderer* renderer;
-    const int WINDOW_SIZE_X = 100;
-    const int WINDOW_SIZE_Y = 100;
-    window = SDL_CreateWindow("Test SDL3", WINDOW_SIZE_X, WINDOW_SIZE_Y, SDL_WINDOW_BORDERLESS);
+    window = SDL_CreateWindow(windowLabel, windowSizeX, windowSizeY, SDL_WINDOW_BORDERLESS);
     renderer = SDL_CreateRenderer(window, NULL);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
@@ -324,26 +317,24 @@ int main() {
     if (SDL_GetDisplayUsableBounds(displayID, &displayRect)) {
         //cout << "x: " << displayRect.x << ", y: " << displayRect.y << ", w: " << displayRect.w << ", h: " << displayRect.h;
 
-        int speedX = 10;
-        int speedY = 10;
         bool running = true;
 
-        for (int i = 0; running && i < 1000; i++) {
+        for (int i = 0; running && i < durationMS/10; i++) {
             SDL_Event e;
             while (SDL_PollEvent(&e)) {
                 if (e.type == SDL_EVENT_QUIT) {
                     running = false;
                 }
-                // handle other events if needed (keyboard, etc.)
+                //handle other events if needed (keyboard, etc.)
             }
 
             int posX, posY;
             SDL_GetWindowPosition(window, &posX, &posY);
 
-            if (posX+WINDOW_SIZE_X > displayRect.w || posX < 0) {
+            if (posX + windowSizeX > displayRect.w || posX < 0) {
                 speedX = -speedX;
             }
-            if (posY+WINDOW_SIZE_Y > displayRect.h || posY < 0) {
+            if (posY + windowSizeY > displayRect.h || posY < 0) {
                 speedY = -speedY;
             }
 
@@ -353,6 +344,19 @@ int main() {
     }
 
     SDL_DestroyWindow(window);
+}
+
+
+
+int main() {
+    if (!SDL_Init(SDL_INIT_VIDEO)) {
+        cout << "ERROR";
+        return -1;
+    }
+
+    bouncyWindowColonThree(100, 100, ":3", 6, 6, 10000);
+    bouncyWindowColonThree(50, 50, ">:3", -10, -10, 10000);
+
     SDL_Quit();
 
     int temp = 100;
