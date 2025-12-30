@@ -8,6 +8,9 @@
 #include <algorithm>
 #include <cctype>
 
+#define SDL_MAIN_HANDLED
+#include <SDL3\SDL.h>
+
 using namespace std;
 
 enum Color {
@@ -300,7 +303,57 @@ void invalidOption(string& input, string message) {
     
 }
 
-int main(){
+int main() {
+    if (!SDL_Init(SDL_INIT_VIDEO)) {
+        cout << "ERROR";
+        return -1;
+    }
+
+    SDL_Window* window;
+    SDL_Renderer* renderer;
+    const int WINDOW_SIZE_X = 100;
+    const int WINDOW_SIZE_Y = 100;
+    window = SDL_CreateWindow("Test SDL3", WINDOW_SIZE_X, WINDOW_SIZE_Y, SDL_WINDOW_BORDERLESS);
+    renderer = SDL_CreateRenderer(window, NULL);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderClear(renderer);
+    SDL_RenderPresent(renderer);
+
+    SDL_DisplayID displayID = SDL_GetDisplayForWindow(window);
+    SDL_Rect displayRect;
+    if (SDL_GetDisplayUsableBounds(displayID, &displayRect)) {
+        //cout << "x: " << displayRect.x << ", y: " << displayRect.y << ", w: " << displayRect.w << ", h: " << displayRect.h;
+
+        int speedX = 10;
+        int speedY = 10;
+        bool running = true;
+
+        for (int i = 0; running && i < 1000; i++) {
+            SDL_Event e;
+            while (SDL_PollEvent(&e)) {
+                if (e.type == SDL_EVENT_QUIT) {
+                    running = false;
+                }
+                // handle other events if needed (keyboard, etc.)
+            }
+
+            int posX, posY;
+            SDL_GetWindowPosition(window, &posX, &posY);
+
+            if (posX+WINDOW_SIZE_X > displayRect.w || posX < 0) {
+                speedX = -speedX;
+            }
+            if (posY+WINDOW_SIZE_Y > displayRect.h || posY < 0) {
+                speedY = -speedY;
+            }
+
+            SDL_SetWindowPosition(window, posX + speedX, posY + speedY);
+            SDL_Delay(10);
+        }
+    }
+
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 
     int temp = 100;
 

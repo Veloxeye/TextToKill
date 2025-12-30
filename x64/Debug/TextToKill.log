@@ -1,3 +1,3 @@
 ﻿  TextToKill.cpp
-C:\TextToKill\TextToKill\TextToKill.cpp(79,18): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-  TextToKill.vcxproj -> C:\TextToKill\x64\Debug\TextToKill.exe
+C:\Users\odett\source\repos\TextToKill\TextToKill.cpp(82,18): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  TextToKill.vcxproj -> C:\Users\odett\source\repos\TextToKill\x64\Debug\TextToKill.exe
