@@ -10,6 +10,7 @@
 
 #define SDL_MAIN_HANDLED
 #include <SDL3\SDL.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 using namespace std;
 
@@ -346,6 +347,81 @@ void bouncyWindowColonThree(int windowSizeX, int windowSizeY, const char * windo
     SDL_DestroyWindow(window);
 }
 
+void textWindow(int windowWidth, int windowHeight, float horizontalPadding, float verticalPadding, const char* windowLabel, int charGridWidth, int charGridHeight, float fontSize, bool forceSquareCells) {
+    SDL_Window* window;
+    SDL_Renderer* renderer;
+    window = SDL_CreateWindow(windowLabel, windowWidth, windowHeight, SDL_WINDOW_MOUSE_FOCUS); //create a window and focus it
+    renderer = SDL_CreateRenderer(window, NULL); //create a renderer for that window, pass name parameter as null to allow SDL to choose the name
+
+    int renderWidth, renderHeight;
+    SDL_GetCurrentRenderOutputSize(renderer, &renderWidth, &renderHeight);
+
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); //set background color to black
+    SDL_RenderClear(renderer); //apply background by clearing the renderer
+
+    TTF_Font* font = TTF_OpenFont("Resources/Fonts/luximr.ttf", fontSize); //open the font at path "Resources/Fonts/luximr.ttf", with font size passed to function
+
+    int leftPadding = horizontalPadding / 2;
+    int topPadding = verticalPadding / 2;
+
+    int availableWidth = renderWidth - horizontalPadding;
+    int availableHeight = renderHeight - verticalPadding;
+
+    int cellWidth = availableWidth / charGridWidth;
+    int cellHeight = availableHeight / charGridHeight;
+
+    if (forceSquareCells) {
+        int cellSize = min(cellWidth, cellHeight);
+        cellWidth = cellHeight = cellSize;
+
+        int usedWidth = cellSize * charGridWidth;
+        int usedHeight = cellSize * charGridHeight;
+
+        leftPadding = (renderWidth - usedWidth) / 2;
+        topPadding = (renderHeight - usedHeight) / 2;
+    }
+
+    //for each grid cell
+    for (int x = 0; x < charGridWidth; x++) {
+        for (int y = 0; y < charGridHeight; y++) {
+            //Generate a grid square rect for the bounds of the char being rendered
+            //add padding, then 
+            SDL_FRect rect = { leftPadding + x * cellWidth, topPadding + y * cellHeight, cellWidth, cellHeight};
+
+            //render the bounds rect in red
+            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+            SDL_RenderRect(renderer, &rect);
+
+
+            SDL_Surface* surface = TTF_RenderText_Blended(font, "#", 1, { 255, 255, 255, 255 }); //Render text using the previously opened font, 
+            SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+            float texW = 0, texH = 0;
+            SDL_GetTextureSize(texture, &texW, &texH);
+            SDL_FRect dst;
+            dst.w = texW;
+            dst.h = texH;
+            //cout << "w: " << texW << ", h: " << texH;
+            dst.x = rect.x + (rect.w - texW) / 2;
+            dst.y = rect.y + (rect.h - texH) / 2;
+            //cout << "x: " << dst.x << ", y: " << dst.y;
+
+            SDL_RenderTexture(renderer, texture, NULL, &dst);
+
+            SDL_DestroyTexture(texture);
+            SDL_DestroySurface(surface);
+        }
+    }
+
+    SDL_RenderPresent(renderer); //tell the renderer to actually display the things we've rendered
+
+    SDL_Delay(5000); //wait 5000 milliseconds
+
+    //prevent memory leaks by closing and destroying used resources before closing the window
+    TTF_CloseFont(font);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+}
 
 
 int main() {
@@ -354,9 +430,13 @@ int main() {
         return -1;
     }
 
-    bouncyWindowColonThree(100, 100, ":3", 6, 6, 10000);
-    bouncyWindowColonThree(50, 50, ">:3", -10, -10, 10000);
+    TTF_Init(); //initialize text rendering
 
+    textWindow(900, 900, 0, 0, "test", 50, 50, 15, false);
+    //bouncyWindowColonThree(100, 100, ":3", 6, 6, 10000);
+    //bouncyWindowColonThree(50, 50, ">:3", -10, -10, 10000);
+
+    TTF_Quit();
     SDL_Quit();
 
     int temp = 100;
