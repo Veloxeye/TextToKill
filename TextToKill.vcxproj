@@ -128,7 +128,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ComponentArray.hpp" />
     <ClCompile Include="TextToKill.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ComponentManager.hpp" />
+    <ClInclude Include="Coordinator.hpp" />
+    <ClInclude Include="EntityManager.hpp" />
+    <ClInclude Include="Event.hpp" />
+    <ClInclude Include="EventManager.hpp" />
+    <ClInclude Include="System.hpp" />
+    <ClInclude Include="SystemManager.hpp" />
+    <ClInclude Include="Types.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

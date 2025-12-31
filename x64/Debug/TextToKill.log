@@ -1,5 +1,2 @@
 ﻿  TextToKill.cpp
-C:\Users\odett\source\repos\TextToKill\TextToKill.cpp(83,18): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\odett\source\repos\TextToKill\TextToKill.cpp(353,57): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\odett\source\repos\TextToKill\TextToKill.cpp(353,44): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
   TextToKill.vcxproj -> C:\Users\odett\source\repos\TextToKill\x64\Debug\TextToKill.exe

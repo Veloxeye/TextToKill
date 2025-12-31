@@ -13,10 +13,48 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\Components">
+      <UniqueIdentifier>{fc059f91-cb04-4144-ae21-1906296df984}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Systems">
+      <UniqueIdentifier>{9e95e5ce-60bc-49e4-8c12-c60545de5970}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ECS Core">
+      <UniqueIdentifier>{958f0c3d-2c68-4c27-9150-1d8d3eee3e56}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TextToKill.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ComponentArray.hpp">
+      <Filter>Header Files\ECS Core</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ComponentManager.hpp">
+      <Filter>Header Files\ECS Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.hpp">
+      <Filter>Header Files\ECS Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Coordinator.hpp">
+      <Filter>Header Files\ECS Core</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityManager.hpp">
+      <Filter>Header Files\ECS Core</Filter>
+    </ClInclude>
+    <ClInclude Include="System.hpp">
+      <Filter>Header Files\ECS Core</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemManager.hpp">
+      <Filter>Header Files\ECS Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.hpp">
+      <Filter>Header Files\ECS Core</Filter>
+    </ClInclude>
+    <ClInclude Include="EventManager.hpp">
+      <Filter>Header Files\ECS Core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

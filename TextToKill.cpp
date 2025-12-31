@@ -14,35 +14,16 @@
 
 using namespace std;
 
-enum Color {
-    CYAN,
-    RED,
-    YELLOW,
-    GRAY,
-    PURPLE,
-    GREEN,
-    ORANGE,
-    RESET
-};
-
 namespace colorCode {
-    const string CYAN = "\033[1;36m";
-    const string RED = "\033[31m";
-    const string YELLOW = "\033[1;33m";
-    const string GRAY = "\033[1;30m";
-    const string PURPLE = "\033[1;35m";
-    const string GREEN = "\033[1;32m";
-    const string ORANGE = "\033[38;5;208m";
-    const string RESET = "\033[0m";
-}
-
-int temp() {
-    
-    // uh like make this yknow shabong da shaboing later ifyaknowaddamean
-    int temp = 100;
-
-    return temp;
-
+    const SDL_Color CYAN = { 0, 255, 255, 255 };
+    const SDL_Color RED = { 255, 0, 0, 255 };
+    const SDL_Color YELLOW = { 255, 255, 0, 255 };
+    const SDL_Color GRAY = { 128, 128, 128, 255 };
+    const SDL_Color PURPLE = { 255, 0, 255, 255 };
+    const SDL_Color GREEN = { 0, 255, 0, 255 };
+    const SDL_Color ORANGE = { 255, 165, 0, 255 };
+    const SDL_Color WHITE = { 255, 255, 255, 255 };
+    const SDL_Color BLACK = { 0, 0, 0, 255 };
 }
 
 void getScreenSize(int& w, int& h) {
@@ -54,41 +35,10 @@ void getScreenSize(int& w, int& h) {
     }
 }
 
-//void setCursorPosition(int row, int col) {
-//#ifdef _WIN32
-  //  COORD pos = {static_cast<SHORT>(col), static_cast<SHORT>(row) };
-  //  SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-//#else
- //   cout << "\033[" << (row + 1) << ";" << (col + 1) << "H" << std::flush;
-//#endif
-//}
-
-//void printTopRight(const string& text, int& temperature) {
-   // int rows, cols;
-  //  getTerminalSize(rows, cols);
-
-  //  string tempStr = to_string(temperature);
-  //  int totalLen = text.length() + tempStr.length();
-  //  int targetCol = cols - totalLen;
-  //  if (targetCol < 0) targetCol = 0;
-
-    // Move cursor to a different position so it doesn't interfere
-  //  setCursorPosition(0, targetCol);
-  //  cout << colorCode::CYAN << text << temperature << std::flush;
-//}
-
 string toLower(string str) {
-   transform(str.begin(), str.end(), str.begin(), ::tolower);
+    transform(str.begin(), str.end(), str.begin(), ::tolower);
     return str;
 }
-
-//void fakeClear() {
- //   int temp = 100;
-
-   // cout << "\033[2J";
- //   printTopRight("Temp: ", temp);
- //   setCursorPosition(0, 0);
-//}
 
 class Game {
 private:
@@ -101,10 +51,13 @@ public:
         return running;
     }
 
+    void quit() {
+        running = false;
+    }
 
     void cmdList() {
-        cout << colorCode::YELLOW << "list of commands: " << colorCode::RESET << endl;
-        cout << colorCode::GRAY << "help. (?) \nlook. (l) \nexamine. (ex) \ninventory. (inv) \nmove: \n north (n)\n south (s)\n east (e)\n west (w)\ndirection. (dir) \nattack. (a) \nquit." << colorCode::RESET << endl;
+        //  cout << colorCode::YELLOW << "list of commands: " << colorCode::WHITE << endl;
+        //  cout << colorCode::GRAY << "help. (?) \nlook. (l) \nexamine. (ex) \ninventory. (inv) \nmove: \n north (n)\n south (s)\n east (e)\n west (w)\ndirection. (dir) \nattack. (a) \nquit." << colorCode::WHITE << endl;
         cout << endl;
     }
 
@@ -123,17 +76,17 @@ public:
         else if (cmd == "examine" || cmd == "ex") {
             string obj;
             cout << endl;
-            cout << colorCode::GRAY << "what do you want to examine?" << colorCode::RESET << endl;
+            //  cout << colorCode::GRAY << "what do you want to examine?" << colorCode::WHITE << endl;
             cin >> obj;
             examineObj(obj);
         }
         else if (cmd == "direction" || cmd == "dir") {
-            
+
         }
         else if (cmd == "attack" || cmd == "a") {
             string enemy;
             cout << endl;
-            cout << colorCode::GRAY << "who do you want to attack?" << colorCode::RESET << endl;
+            //  cout << colorCode::GRAY << "who do you want to attack?" << colorCode::WHITE << endl;
             cout << endl;
             cin >> enemy;
 
@@ -145,11 +98,11 @@ public:
         else if (cmd == "quit") {
             running = false;
             cout << endl;
-            cout << colorCode::GRAY << "goodbye for now..." << colorCode::RESET << endl;
+            // cout << colorCode::GRAY << "goodbye for now..." << colorCode::WHITE << endl;
         }
         else {
             cout << endl;
-            cout << colorCode::RED << "UNKNOWN COMMAND" << colorCode::RESET << endl;
+            // cout << colorCode::RED << "UNKNOWN COMMAND" << colorCode::WHITE << endl;
         }
     }
 
@@ -165,7 +118,7 @@ public:
 
     void move(string dir) {
         dir = toLower(dir);
-        
+
         if (dir == "north" || dir == "n") {
             bool moveNorth = true;
         }
@@ -179,12 +132,12 @@ public:
             bool moveWest = false;
         }
         else {
-            cout << colorCode::RED << "invalid direction" << colorCode::RESET << endl;
+            //cout << colorCode::RED << "invalid direction" << colorCode::WHITE << endl;
         }
     }
 
     void examineObj(string obj) {
-       
+
         toLower(obj);
 
 
@@ -217,7 +170,7 @@ public:
 
         if (enemy == "god") {
             cout << endl;
-            cout << colorCode::RED << "smited :<" << colorCode::RESET << endl;
+            //cout << colorCode::RED << "smited :<" << colorCode::WHITE << endl;
         }
         else {
             cout << endl;
@@ -227,32 +180,6 @@ public:
     }
 };
 
-class Object {
-private:
-    
-
-public:
-    
-
-};
-
-class Area {
-private:
-
-
-public:
-
-
-};
-
-class Actor {
-private:
-
-
-public:
-
-
-};
 
 void clearScreen() {
 #ifdef _WIN32
@@ -262,36 +189,36 @@ void clearScreen() {
 #endif
 }
 
-string getInput(string text, string color = colorCode::CYAN) {
-    string input;
-    
-    if (!text.empty()) {
-        cout << color << text << colorCode::RESET << endl;
-        cout << endl;
-    }
-    cin >> input;
-    input = toLower(input);
-    return input;
-}
+//string getInput(string text, string color = colorCode::CYAN) {
+   // string input;
 
-void checkValidity(string& input, string definition, string get, string color = colorCode::CYAN) {
-    
-    input = toLower(input);
+  //  if (!text.empty()) {
+   //     cout << color << text << colorCode::WHITE << endl;
+   //     cout << endl;
+  //  }
+ //   cin >> input;
+ //   input = toLower(input);
+   // return input;
+//}
 
-    while (input != definition) {
-        //fakeClear();
-        cout << endl;
-        cout << color << "not currently an option..." << colorCode::RESET << endl;
-        input = getInput(get, color);
-    }
-}
+//void checkValidity(string& input, string definition, string get, string color = colorCode::CYAN) {
+
+   // input = toLower(input);
+
+ //   while (input != definition) {
+       // fakeClear();
+//        cout << endl;
+       // cout << color << "not currently an option..." << colorCode::WHITE << endl;
+       // input = getInput(get, color);
+//    }
+//}
 
 void invalidOption(string& input, string message) {
 
-    
+
 }
 
-void bouncyWindowColonThree(int windowSizeX, int windowSizeY, const char * windowLabel, int speedX, int speedY, int durationMS) {
+void bouncyWindowColonThree(int windowSizeX, int windowSizeY, const char* windowLabel, int speedX, int speedY, int durationMS) {
     SDL_Window* window;
     SDL_Renderer* renderer;
     window = SDL_CreateWindow(windowLabel, windowSizeX, windowSizeY, SDL_WINDOW_BORDERLESS);
@@ -307,7 +234,7 @@ void bouncyWindowColonThree(int windowSizeX, int windowSizeY, const char * windo
 
         bool running = true;
 
-        for (int i = 0; running && i < durationMS/10; i++) {
+        for (int i = 0; running && i < durationMS / 10; i++) {
             SDL_Event e;
             while (SDL_PollEvent(&e)) {
                 if (e.type == SDL_EVENT_QUIT) {
@@ -334,75 +261,98 @@ void bouncyWindowColonThree(int windowSizeX, int windowSizeY, const char * windo
     SDL_DestroyWindow(window);
 }
 
-void textWindow(int windowWidth, int windowHeight, float horizontalPadding, float verticalPadding, const char* windowLabel, int charGridWidth, int charGridHeight, float fontSize, bool forceSquareCells) {
+void textWindow(bool isResizeable, float horizontalPadding, float verticalPadding, const char* windowLabel, int charGridWidth, int charGridHeight, float fontSize, bool forceSquareCells, Game& game) {
     SDL_Window* window;
     SDL_Renderer* renderer;
-    window = SDL_CreateWindow(windowLabel, windowWidth, windowHeight, SDL_WINDOW_MOUSE_FOCUS); //create a window and focus it
-    renderer = SDL_CreateRenderer(window, NULL); //create a renderer for that window, pass name parameter as null to allow SDL to choose the name
 
-    int renderWidth, renderHeight;
-    SDL_GetCurrentRenderOutputSize(renderer, &renderWidth, &renderHeight);
+    Uint32 windowFlags = SDL_WINDOW_MOUSE_FOCUS;
 
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); //set background color to black
-    SDL_RenderClear(renderer); //apply background by clearing the renderer
+    if (isResizeable) { //sets window size to 800x600 and makes it resizeable
+        windowFlags |= SDL_WINDOW_RESIZABLE;
+        window = SDL_CreateWindow(windowLabel, 800, 600, windowFlags);
+    }
+    else { //fullscreens, no resizing
+        int screenWidth, screenHeight;
+        getScreenSize(screenWidth, screenHeight);
+        windowFlags |= SDL_WINDOW_BORDERLESS;
+        window = SDL_CreateWindow(windowLabel, screenWidth, screenHeight, windowFlags);
+        SDL_SetWindowPosition(window, 0, 0);
+    }
+
+    renderer = SDL_CreateRenderer(window, NULL);
 
     TTF_Font* font = TTF_OpenFont("Resources/Fonts/luximr.ttf", fontSize); //open the font at path "Resources/Fonts/luximr.ttf", with font size passed to function
 
-    float leftPadding = horizontalPadding / 2.0f;
-    float topPadding = verticalPadding / 2.0f;
-
-    float availableWidth = renderWidth - horizontalPadding;
-    float availableHeight = renderHeight - verticalPadding;
-
-    float cellWidth = availableWidth / charGridWidth;
-    float cellHeight = availableHeight / charGridHeight;
-
-    if (forceSquareCells) {
-        float cellSize = min(cellWidth, cellHeight);
-        cellWidth = cellHeight = cellSize;
-
-        float usedWidth = cellSize * charGridWidth;
-        float usedHeight = cellSize * charGridHeight;
-
-        leftPadding = (renderWidth - usedWidth) / 2.0f;
-        topPadding = (renderHeight - usedHeight) / 2.0f;
-    }
-
-    //for each grid cell
-    for (int x = 0; x < charGridWidth; x++) {
-        for (int y = 0; y < charGridHeight; y++) {
-            //Generate a grid square rect for the bounds of the char being rendered
-            //add padding, then 
-            SDL_FRect rect = { leftPadding + x * cellWidth, topPadding + y * cellHeight, cellWidth, cellHeight };
-
-            //render the bounds rect in red
-            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-            SDL_RenderRect(renderer, &rect);
-
-
-            SDL_Surface* surface = TTF_RenderText_Blended(font, "#", 1, { 255, 255, 255, 255 }); //Render text using the previously opened font, 
-            SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-
-            float texW = 0, texH = 0;
-            SDL_GetTextureSize(texture, &texW, &texH);
-            SDL_FRect dst;
-            dst.w = texW;
-            dst.h = texH;
-            //cout << "w: " << texW << ", h: " << texH;
-            dst.x = rect.x + (rect.w - texW) / 2;
-            dst.y = rect.y + (rect.h - texH) / 2;
-            //cout << "x: " << dst.x << ", y: " << dst.y;
-
-            SDL_RenderTexture(renderer, texture, NULL, &dst);
-
-            SDL_DestroyTexture(texture);
-            SDL_DestroySurface(surface);
+    SDL_Surface* surface;
+    SDL_Texture* texture;
+    while (game.isRunning()) { //decides if the game is running or not, if game gets quit window closes
+        SDL_Event e;
+        while (SDL_PollEvent(&e)) {
+            if (e.type == SDL_EVENT_QUIT) {
+                game.quit();
+            }
+            if (e.type == SDL_EVENT_KEY_DOWN && e.key.key == SDLK_ESCAPE) {
+                game.quit();
+            }
         }
+        int renderWidth, renderHeight;
+        SDL_GetCurrentRenderOutputSize(renderer, &renderWidth, &renderHeight);
+
+        float leftPadding = horizontalPadding / 2.0f;
+        float topPadding = verticalPadding / 2.0f;
+
+        float availableWidth = renderWidth - horizontalPadding;
+        float availableHeight = renderHeight - verticalPadding;
+
+        float cellWidth = availableWidth / charGridWidth;
+        float cellHeight = availableHeight / charGridHeight;
+
+        if (forceSquareCells) {
+            float cellSize = min(cellWidth, cellHeight);
+            cellWidth = cellHeight = cellSize;
+
+            float usedWidth = cellSize * charGridWidth;
+            float usedHeight = cellSize * charGridHeight;
+
+            leftPadding = (renderWidth - usedWidth) / 2.0f;
+            topPadding = (renderHeight - usedHeight) / 2.0f;
+        }
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
+        for (int x = 0; x < charGridWidth; x++) {
+            for (int y = 0; y < charGridHeight; y++) {
+                //Generate a grid square rect for the bounds of the char being rendered
+                //add padding, then 
+                SDL_FRect rect = { leftPadding + x * cellWidth, topPadding + y * cellHeight, cellWidth, cellHeight };
+
+                //render the bounds rect in red
+                SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+                SDL_RenderRect(renderer, &rect);
+
+
+                surface = TTF_RenderText_Blended(font, "#", 1, { 255, 255, 255, 255 }); //Render text using the previously opened font, 
+                texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+                float texW = 0, texH = 0;
+                SDL_GetTextureSize(texture, &texW, &texH);
+                SDL_FRect dst;
+                dst.w = texW;
+                dst.h = texH;
+                //cout << "w: " << texW << ", h: " << texH;
+                dst.x = rect.x + (rect.w - texW) / 2;
+                dst.y = rect.y + (rect.h - texH) / 2;
+                //cout << "x: " << dst.x << ", y: " << dst.y;
+
+                SDL_RenderTexture(renderer, texture, NULL, &dst);
+                SDL_DestroyTexture(texture);
+                SDL_DestroySurface(surface);
+            }
+        }
+        SDL_RenderPresent(renderer); //tell the renderer to actually display the things we've rendered
+        SDL_Delay(16); // ~60 fps instead of 5000ms
     }
-
-    SDL_RenderPresent(renderer); //tell the renderer to actually display the things we've rendered
-
-    SDL_Delay(5000); //wait 5000 milliseconds
 
     //prevent memory leaks by closing and destroying used resources before closing the window
     TTF_CloseFont(font);
@@ -419,32 +369,21 @@ int main() {
 
     TTF_Init(); //initialize text rendering
 
-    int width, height;
-    getScreenSize(width,height);
-    textWindow(width, height, 0, 0, "test", 50, 50, 15, false);
-    //bouncyWindowColonThree(100, 100, ":3", 6, 6, 10000);
-    //bouncyWindowColonThree(50, 50, ">:3", -10, -10, 10000);
+    Game game; //game creation
+
+    bool isResizeable = true;
+    textWindow(isResizeable, 20, 20, "Text 2 Kill", 50, 50, 15, false, game);
 
     TTF_Quit();
     SDL_Quit();
 
-    int temp = 100;
-
-    string Input = getInput("type 'start' to begin.", colorCode::GRAY);
-    checkValidity(Input, "start", "type 'start' to begin.", colorCode::GRAY);
-    clearScreen();
+    //string Input = getInput("type 'start' to begin.", colorCode::GRAY);
+    //checkValidity(Input, "start", "type 'start' to begin.", colorCode::GRAY);
+    //clearScreen();
     //printTopRight("Temp: ", temp);
    // setCursorPosition(0, 0);
-    cout << colorCode::GRAY << "you are in a thick pine forest. \nit appears to be morning. \nthere's light snow." << colorCode::RESET << endl;
+    //cout << colorCode::GRAY << "you are in a thick pine forest. \nit appears to be morning. \nthere's light snow." << colorCode::WHITE << endl;
     cout << endl;
-
-    Game game;
-
-    while (game.isRunning()) {
-        string cmd = getInput("", colorCode::GRAY);
-        game.cmdUse(cmd);
-    }
-
 
     return 0;
 
