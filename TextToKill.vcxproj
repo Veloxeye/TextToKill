@@ -105,6 +105,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)libs\SDL3-3.2.28\include;$(SolutionDir)libs\SDL3_ttf-3.2.2\include</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>
       </AdditionalUsingDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,6 +130,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ComponentArray.hpp" />
+    <ClCompile Include="Phrase.cpp" />
+    <ClCompile Include="StringUtils.cpp" />
     <ClCompile Include="TextToKill.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -137,6 +140,9 @@
     <ClInclude Include="EntityManager.hpp" />
     <ClInclude Include="Event.hpp" />
     <ClInclude Include="EventManager.hpp" />
+    <ClInclude Include="Path.hpp" />
+    <ClInclude Include="Phrase.h" />
+    <ClInclude Include="StringUtils.h" />
     <ClInclude Include="System.hpp" />
     <ClInclude Include="SystemManager.hpp" />
     <ClInclude Include="Types.hpp" />

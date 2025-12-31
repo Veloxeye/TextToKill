@@ -1,2 +1,10 @@
-﻿  TextToKill.cpp
+﻿  Phrase.cpp
+C:\Users\odett\source\repos\TextToKill\Phrase.cpp(55,65): warning C4267: 'argument': conversion from 'size_t' to '_Ty', possible loss of data
+C:\Users\odett\source\repos\TextToKill\Phrase.cpp(55,65): warning C4267:         with
+C:\Users\odett\source\repos\TextToKill\Phrase.cpp(55,65): warning C4267:         [
+C:\Users\odett\source\repos\TextToKill\Phrase.cpp(55,65): warning C4267:             _Ty=int
+C:\Users\odett\source\repos\TextToKill\Phrase.cpp(55,65): warning C4267:         ]
+  StringUtils.cpp
+  TextToKill.cpp
+  Generating Code...
   TextToKill.vcxproj -> C:\Users\odett\source\repos\TextToKill\x64\Debug\TextToKill.exe

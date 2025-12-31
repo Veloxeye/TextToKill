@@ -7,6 +7,8 @@
 #include <chrono>
 #include <algorithm>
 #include <cctype>
+#include "Phrase.h"
+#include "StringUtils.h"
 
 #define SDL_MAIN_HANDLED
 #include <SDL3\SDL.h>
@@ -33,11 +35,6 @@ void getScreenSize(int& w, int& h) {
         w = mode->w;
         h = mode->h;
     }
-}
-
-string toLower(string str) {
-    transform(str.begin(), str.end(), str.begin(), ::tolower);
-    return str;
 }
 
 class Game {
@@ -376,6 +373,22 @@ int main() {
 
     TTF_Quit();
     SDL_Quit();
+
+    Phrase testPhrase(
+        {
+            {"walk", "run", "go", "south\n", "s\n"},
+            {"", "to the"},
+            {"s", "south"},
+            {"", ".", "!"}
+        }
+    );
+
+    cout << "TEST0" << endl;
+    while (true) {
+        string in;
+        getline(cin, in);
+        cout << testPhrase.isPhrase(in) << endl;
+    }
 
     //string Input = getInput("type 'start' to begin.", colorCode::GRAY);
     //checkValidity(Input, "start", "type 'start' to begin.", colorCode::GRAY);

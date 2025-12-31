@@ -13,14 +13,17 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\Components">
-      <UniqueIdentifier>{fc059f91-cb04-4144-ae21-1906296df984}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Systems">
       <UniqueIdentifier>{9e95e5ce-60bc-49e4-8c12-c60545de5970}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\ECS Core">
       <UniqueIdentifier>{958f0c3d-2c68-4c27-9150-1d8d3eee3e56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Components">
+      <UniqueIdentifier>{2ec4b453-54b8-407b-8a76-becc1e8f4af3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Systems">
+      <UniqueIdentifier>{8eccc45c-5c62-4331-9aa5-f267a4e17736}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -29,6 +32,12 @@
     </ClCompile>
     <ClCompile Include="ComponentArray.hpp">
       <Filter>Header Files\ECS Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Phrase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StringUtils.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +64,15 @@
     </ClInclude>
     <ClInclude Include="EventManager.hpp">
       <Filter>Header Files\ECS Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Path.hpp">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="StringUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Phrase.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
