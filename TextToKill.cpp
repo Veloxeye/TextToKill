@@ -11,7 +11,6 @@
 #include "Phrase.h"
 #include "StringUtils.h"
 
-
 #define SDL_MAIN_HANDLED
 #include <SDL3\SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
@@ -218,51 +217,7 @@ void invalidOption(string& input, string message) {
 
 }
 
-
-void bouncyWindowColonThree(int windowSizeX, int windowSizeY, const char* windowLabel, int speedX, int speedY, int durationMS) {
-    SDL_Window* window;
-    SDL_Renderer* renderer;
-    window = SDL_CreateWindow(windowLabel, windowSizeX, windowSizeY, SDL_WINDOW_BORDERLESS);
-    renderer = SDL_CreateRenderer(window, NULL);
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderClear(renderer);
-    SDL_RenderPresent(renderer);
-
-    SDL_DisplayID displayID = SDL_GetDisplayForWindow(window);
-    SDL_Rect displayRect;
-    if (SDL_GetDisplayUsableBounds(displayID, &displayRect)) {
-        //cout << "x: " << displayRect.x << ", y: " << displayRect.y << ", w: " << displayRect.w << ", h: " << displayRect.h;
-
-        bool running = true;
-
-        for (int i = 0; running && i < durationMS / 10; i++) {
-            SDL_Event e;
-            while (SDL_PollEvent(&e)) {
-                if (e.type == SDL_EVENT_QUIT) {
-                    running = false;
-                }
-                //handle other events if needed (keyboard, etc.)
-            }
-
-            int posX, posY;
-            SDL_GetWindowPosition(window, &posX, &posY);
-
-            if (posX + windowSizeX > displayRect.w || posX < 0) {
-                speedX = -speedX;
-            }
-            if (posY + windowSizeY > displayRect.h || posY < 0) {
-                speedY = -speedY;
-            }
-
-            SDL_SetWindowPosition(window, posX + speedX, posY + speedY);
-            SDL_Delay(10);
-        }
-    }
-
-    SDL_DestroyWindow(window);
-}
-
-void renderTextInGrid(SDL_Renderer* renderer, TTF_Font* font, const string& text, int startCol, int startRow, SDL_Color color, float leftPadding, float topPadding, float cellWidth, float cellHeight) {
+void renderTextInGrid(int position, int adjustVertical, int adjustHorizontal, SDL_Renderer* renderer, TTF_Font* font, const string& text, int startCol, int startRow, SDL_Color color, float leftPadding, float topPadding, float cellWidth, float cellHeight, int numCols, int numRows) {
 
     for (size_t i = 0; i < text.length(); i++) {
 
@@ -282,18 +237,45 @@ void renderTextInGrid(SDL_Renderer* renderer, TTF_Font* font, const string& text
             cerr << "Error creating texture: " << SDL_GetError() << endl;
             continue;
         }
-
-        int col = startCol + i;
-        int row = startRow;
-
+        //position 0 = center, 1 = top left, 2 = top right, 3 bottom left, 4 bottom right, adjust from there
+        int col, row;
+        switch (position) {
+        case 0: //center
+            col = startCol + i + adjustHorizontal;
+            row = startRow + adjustVertical;
+            break;
+        case 1: //top left
+            col = i + adjustHorizontal;
+            row = adjustVertical;
+            break;
+        case 2: //top right
+            col = numCols - text.length() + i + adjustHorizontal;
+            row = adjustVertical;
+            break;
+        case 3: //bottom left
+            col = i + adjustHorizontal;
+            row = numRows - 1 + adjustVertical;
+            break;
+        case 4: //bottom right
+            col = numCols - text.length() + i + adjustHorizontal;
+            row = numRows - 1 + adjustVertical;
+            break;
+        default:
+            col = startCol + i;
+            row = startRow;
+            break;
+        }
+        if (col < 0 || row < 0 || col >= numCols || row >= numRows) {
+            cerr << "Error out of bounds" << endl;
+            continue;
+        }
+        // Render at calculated position (same for all modes)
         float cellX = leftPadding + col * cellWidth;
         float cellY = topPadding + row * cellHeight;
 
         SDL_FRect dst;
-
         dst.w = texW;
         dst.h = texH;
-
         dst.x = cellX + (cellWidth - texW) / 2;
         dst.y = cellY + (cellHeight - texH) / 2;
 
@@ -302,13 +284,13 @@ void renderTextInGrid(SDL_Renderer* renderer, TTF_Font* font, const string& text
     }
 }
 
-void textWindow(string textCenter, bool isResizeable, float horizontalPadding, float verticalPadding, const char* windowLabel, int charGridWidth, int charGridHeight, bool forceSquareCells, Game& game) {
+void textWindow(int position, int vertical, int horizontal, string textPrint, bool isResizeable, float horizontalPadding, float verticalPadding, const char* windowLabel, int charGridWidth, int charGridHeight, bool forceSquareCells, Game& game) {
     SDL_Window* window;
     SDL_Renderer* renderer;
 
     //ensures theres enough grid for the string to print without getting cut off
     int textLength;
-    textLength = textCenter.length();
+    textLength = textPrint.length();
     if (charGridWidth < textLength) charGridWidth = textLength;
     else if (charGridHeight < textLength) charGridHeight = textLength;
 
@@ -405,10 +387,10 @@ void textWindow(string textCenter, bool isResizeable, float horizontalPadding, f
 
         SDL_DestroyTexture(texture);
 
-        int startCol = (charGridWidth - 11) / 2;
+        int startCol = (charGridWidth - textLength) / 2;
         int startRow = charGridHeight / 2;
 
-        renderTextInGrid(renderer, font, textCenter, startCol, startRow, colorCode::WHITE, leftPadding, topPadding, cellWidth, cellHeight);
+        renderTextInGrid(position, vertical, horizontal, renderer, font, textPrint, startCol, startRow, colorCode::WHITE, leftPadding, topPadding, cellWidth, cellHeight, charGridWidth, charGridHeight);
 
         SDL_RenderPresent(renderer); //tell the renderer to actually display the things we've rendered
         SDL_Delay(16); // ~60 fps instead of 5000ms
@@ -433,7 +415,7 @@ int main() {
     Game game; //game creation
 
     bool isResizeable = true;
-    textWindow("Text 2 Kill", isResizeable, 20, 20, "Title", 21, 11, false, game);
+    textWindow(0, 0, 0, "Text 2 Kill", isResizeable, 20, 20, "TEXT 2 KILL", 25, 25, false, game);
 
     TTF_Quit();
     SDL_Quit();

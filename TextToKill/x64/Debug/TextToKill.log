@@ -1,2 +1,12 @@
 ﻿  TextToKill.cpp
+C:\TextToKill\TextToKill\TextToKill.cpp(232,20): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\TextToKill\TextToKill\TextToKill.cpp(233,20): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\TextToKill\TextToKill\TextToKill.cpp(244,32): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\TextToKill\TextToKill\TextToKill.cpp(248,21): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\TextToKill\TextToKill\TextToKill.cpp(252,47): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\TextToKill\TextToKill\TextToKill.cpp(256,21): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\TextToKill\TextToKill\TextToKill.cpp(260,47): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\TextToKill\TextToKill\TextToKill.cpp(264,28): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\TextToKill\TextToKill\TextToKill.cpp(293,34): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\TextToKill\TextToKill\TextToKill.cpp(355,69): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   TextToKill.vcxproj -> C:\TextToKill\TextToKill\x64\Debug\TextToKill.exe
