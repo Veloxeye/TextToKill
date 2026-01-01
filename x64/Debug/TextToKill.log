@@ -1,10 +1,7 @@
-﻿  Phrase.cpp
-C:\Users\odett\source\repos\TextToKill\Phrase.cpp(55,65): warning C4267: 'argument': conversion from 'size_t' to '_Ty', possible loss of data
-C:\Users\odett\source\repos\TextToKill\Phrase.cpp(55,65): warning C4267:         with
-C:\Users\odett\source\repos\TextToKill\Phrase.cpp(55,65): warning C4267:         [
-C:\Users\odett\source\repos\TextToKill\Phrase.cpp(55,65): warning C4267:             _Ty=int
-C:\Users\odett\source\repos\TextToKill\Phrase.cpp(55,65): warning C4267:         ]
-  StringUtils.cpp
-  TextToKill.cpp
-  Generating Code...
+﻿  TextToKill.cpp
+C:\Users\odett\source\repos\TextToKill\TextToKill.cpp(277,20): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\odett\source\repos\TextToKill\TextToKill.cpp(278,20): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\odett\source\repos\TextToKill\TextToKill.cpp(286,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\odett\source\repos\TextToKill\TextToKill.cpp(311,35): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\odett\source\repos\TextToKill\TextToKill.cpp(373,69): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   TextToKill.vcxproj -> C:\Users\odett\source\repos\TextToKill\x64\Debug\TextToKill.exe

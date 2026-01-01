@@ -7,12 +7,15 @@
 #include <chrono>
 #include <algorithm>
 #include <cctype>
+#include <cmath>
 #include "Phrase.h"
 #include "StringUtils.h"
+
 
 #define SDL_MAIN_HANDLED
 #include <SDL3\SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
+#include <SDL3/SDL_audio.h>
 
 using namespace std;
 
@@ -215,6 +218,7 @@ void invalidOption(string& input, string message) {
 
 }
 
+
 void bouncyWindowColonThree(int windowSizeX, int windowSizeY, const char* windowLabel, int speedX, int speedY, int durationMS) {
     SDL_Window* window;
     SDL_Renderer* renderer;
@@ -258,9 +262,55 @@ void bouncyWindowColonThree(int windowSizeX, int windowSizeY, const char* window
     SDL_DestroyWindow(window);
 }
 
-void textWindow(bool isResizeable, float horizontalPadding, float verticalPadding, const char* windowLabel, int charGridWidth, int charGridHeight, float fontSize, bool forceSquareCells, Game& game) {
+void renderTextInGrid(SDL_Renderer* renderer, TTF_Font* font, const string& text, int startCol, int startRow, SDL_Color color, float leftPadding, float topPadding, float cellWidth, float cellHeight) {
+
+    for (size_t i = 0; i < text.length(); i++) {
+
+        char charStr[2] = { text[i], '\0' }; //c style string \0 is a null terminator
+        SDL_Surface* surface = TTF_RenderText_Blended(font, charStr, 1, color); //antaliasing version
+        if (!surface) {
+            cerr << "Error: rendering char" << endl;
+            continue;
+        }
+
+        SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface); //convert surface to texture
+        float texW = surface->w;
+        float texH = surface->h;
+        SDL_DestroySurface(surface);
+
+        if (!texture) {
+            cerr << "Error creating texture: " << SDL_GetError() << endl;
+            continue;
+        }
+
+        int col = startCol + i;
+        int row = startRow;
+
+        float cellX = leftPadding + col * cellWidth;
+        float cellY = topPadding + row * cellHeight;
+
+        SDL_FRect dst;
+
+        dst.w = texW;
+        dst.h = texH;
+
+        dst.x = cellX + (cellWidth - texW) / 2;
+        dst.y = cellY + (cellHeight - texH) / 2;
+
+        SDL_RenderTexture(renderer, texture, NULL, &dst);
+        SDL_DestroyTexture(texture);
+    }
+}
+
+void textWindow(string textCenter, bool isResizeable, float horizontalPadding, float verticalPadding, const char* windowLabel, int charGridWidth, int charGridHeight, bool forceSquareCells, Game& game) {
     SDL_Window* window;
     SDL_Renderer* renderer;
+
+    //ensures theres enough grid for the string to print without getting cut off
+    int textLength;
+    textLength = textCenter.length();
+    if (charGridWidth < textLength) charGridWidth = textLength;
+    else if (charGridHeight < textLength) charGridHeight = textLength;
 
     Uint32 windowFlags = SDL_WINDOW_MOUSE_FOCUS;
 
@@ -278,10 +328,6 @@ void textWindow(bool isResizeable, float horizontalPadding, float verticalPaddin
 
     renderer = SDL_CreateRenderer(window, NULL);
 
-    TTF_Font* font = TTF_OpenFont("Resources/Fonts/luximr.ttf", fontSize); //open the font at path "Resources/Fonts/luximr.ttf", with font size passed to function
-
-    SDL_Surface* surface;
-    SDL_Texture* texture;
     while (game.isRunning()) { //decides if the game is running or not, if game gets quit window closes
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
@@ -315,25 +361,36 @@ void textWindow(bool isResizeable, float horizontalPadding, float verticalPaddin
             topPadding = (renderHeight - usedHeight) / 2.0f;
         }
 
+        //calculate grid width and height for size adjusts
+        float gridWidth = cellWidth * charGridWidth;
+        float gridHeight = cellHeight * charGridHeight;
+
+        //calculate font size
+        int fontSize = (int)(cellHeight * 0.8f);
+        if (fontSize < 8) fontSize = 8; //minimum font size is 8 for now
+
+        //moved this to calculate font size first
+        TTF_Font* font = TTF_OpenFont("Resources/Fonts/luximr.ttf", fontSize); //open the font at path "Resources/Fonts/luximr.ttf", with font size passed to function
+
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
+
+        //Create texture BEFORE loop
+        SDL_Surface* surface = TTF_RenderText_Blended(font, " ", 1, { 255, 255, 255, 255 }); //Render text using the previously opened font, 
+        SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+        float texW = 0, texH = 0;
+        SDL_GetTextureSize(texture, &texW, &texH);
+        SDL_DestroySurface(surface); // Don't need surface anymore
 
         for (int x = 0; x < charGridWidth; x++) {
             for (int y = 0; y < charGridHeight; y++) {
                 //Generate a grid square rect for the bounds of the char being rendered
-                //add padding, then 
                 SDL_FRect rect = { leftPadding + x * cellWidth, topPadding + y * cellHeight, cellWidth, cellHeight };
 
-                //render the bounds rect in red
-                SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+                //render the bounds rect in blue
+                SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
                 SDL_RenderRect(renderer, &rect);
 
-
-                surface = TTF_RenderText_Blended(font, "#", 1, { 255, 255, 255, 255 }); //Render text using the previously opened font, 
-                texture = SDL_CreateTextureFromSurface(renderer, surface);
-
-                float texW = 0, texH = 0;
-                SDL_GetTextureSize(texture, &texW, &texH);
                 SDL_FRect dst;
                 dst.w = texW;
                 dst.h = texH;
@@ -343,16 +400,23 @@ void textWindow(bool isResizeable, float horizontalPadding, float verticalPaddin
                 //cout << "x: " << dst.x << ", y: " << dst.y;
 
                 SDL_RenderTexture(renderer, texture, NULL, &dst);
-                SDL_DestroyTexture(texture);
-                SDL_DestroySurface(surface);
             }
         }
+
+        SDL_DestroyTexture(texture);
+
+        int startCol = (charGridWidth - 11) / 2;
+        int startRow = charGridHeight / 2;
+
+        renderTextInGrid(renderer, font, textCenter, startCol, startRow, colorCode::WHITE, leftPadding, topPadding, cellWidth, cellHeight);
+
         SDL_RenderPresent(renderer); //tell the renderer to actually display the things we've rendered
         SDL_Delay(16); // ~60 fps instead of 5000ms
+
+        TTF_CloseFont(font);
     }
 
     //prevent memory leaks by closing and destroying used resources before closing the window
-    TTF_CloseFont(font);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
 }
@@ -369,7 +433,7 @@ int main() {
     Game game; //game creation
 
     bool isResizeable = true;
-    textWindow(isResizeable, 20, 20, "Text 2 Kill", 50, 50, 15, false, game);
+    textWindow("Text 2 Kill", isResizeable, 20, 20, "Title", 21, 11, false, game);
 
     TTF_Quit();
     SDL_Quit();
@@ -394,7 +458,7 @@ int main() {
     //checkValidity(Input, "start", "type 'start' to begin.", colorCode::GRAY);
     //clearScreen();
     //printTopRight("Temp: ", temp);
-   // setCursorPosition(0, 0);
+    //setCursorPosition(0, 0);
     //cout << colorCode::GRAY << "you are in a thick pine forest. \nit appears to be morning. \nthere's light snow." << colorCode::WHITE << endl;
     cout << endl;
 
